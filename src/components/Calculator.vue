@@ -27,7 +27,7 @@
       <q-separator/>
 
       <q-card-actions align="right">
-        <q-btn outline color="primary" icon="fas fa-calculator" label="Calculate" @click="step = 2"></q-btn>
+        <q-btn outline color="primary" icon="fas fa-calculator" label="Calculate" @click="calculate"></q-btn>
       </q-card-actions>
     </q-card>
     <q-card class="q-pa-md" v-show="step === 2">
@@ -35,7 +35,15 @@
         <div class="text-h6">Retirement Calculator</div>
 
         <q-separator/>
-        <q-card-section>...</q-card-section>
+        <q-card-section>
+          <q-table
+            :data="tableData"
+            :columns="tableColumns"
+            row-key="year"
+            separator="cell"
+            dense
+          />
+        </q-card-section>
         <q-separator/>
 
         <q-card-actions align="right">
@@ -48,7 +56,8 @@
 </template>
 
 <script lang="ts">
-  import { Variables } from 'components/models';
+  import { Variables, TableData } from 'components/models';
+  import Vue from 'vue';
 
   // Create our number formatter.
   const formatter = new Intl.NumberFormat('en-US', {
@@ -56,7 +65,7 @@
     currency: 'USD'
   });
 
-  export default {
+  export default Vue.extend({
     name: 'Calculator',
     data() {
       const variables: Variables = {
@@ -67,6 +76,7 @@
         annualSavingsPercent: 10,
         annualReturnPercent: 2
       };
+      const tableData: TableData[] = [];
       return {
         variables,
         ageMin: 25,
@@ -79,13 +89,23 @@
         annualSavingsPercentMax: 50,
         annualReturnPercentMin: 0.10,
         annualReturnPercentMax: 20,
-        step: 1
+        step: 1,
+        tableData,
+        tableColumns: [
+          { name: 'year', label: 'Year', field: 'year', sortable: false, align: 'left' },
+          { name: 'accYield', label: 'Accumulated Yield', field: 'accYield', sortable: false, align: 'left' },
+          { name: 'yearlyYield', label: 'Yearly Yield', field: 'yearlyYield', sortable: false, align: 'left' },
+          { name: 'amountSaved', label: 'Saved', field: 'amountSaved', sortable: false, align: 'left' }
+        ]
       };
     },
     methods: {
-      formatter(number: number) {
+      formatter(number: number): string {
         return formatter.format(number);
+      },
+      calculate(): void {
+        this.step = 2;
       }
     }
-  };
+  });
 </script>
