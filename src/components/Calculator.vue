@@ -1,6 +1,6 @@
 <template>
   <div class="col col-xs-12 col-sm-6">
-    <q-card class="q-pa-md">
+    <q-card class="q-pa-md" v-show="step === 1">
       <q-card-section>
         <div class="text-h6">Retirement Calculator</div>
       </q-card-section>
@@ -27,8 +27,22 @@
       <q-separator/>
 
       <q-card-actions align="right">
-        <q-btn outline color="primary" icon="fas fa-save" label="Save"></q-btn>
+        <q-btn outline color="primary" icon="fas fa-calculator" label="Calculate" @click="step = 2"></q-btn>
       </q-card-actions>
+    </q-card>
+    <q-card class="q-pa-md" v-show="step === 2">
+      <q-card-section>
+        <div class="text-h6">Retirement Calculator</div>
+
+        <q-separator/>
+        <q-card-section>...</q-card-section>
+        <q-separator/>
+
+        <q-card-actions align="right">
+          <q-btn outline icon="fas fa-arrow-left" label="Back" @click="step = 1"></q-btn>
+          <q-btn outline color="primary" icon="fas fa-save" label="Save"></q-btn>
+        </q-card-actions>
+      </q-card-section>
     </q-card>
   </div>
 </template>
@@ -64,7 +78,8 @@
         annualSavingsPercentMin: 10,
         annualSavingsPercentMax: 50,
         annualReturnPercentMin: 0.10,
-        annualReturnPercentMax: 20
+        annualReturnPercentMax: 20,
+        step: 1
       };
     },
     methods: {
