@@ -79,9 +79,14 @@
 
         <q-separator/>
 
+        <q-card-section>
+          <highcharts :options="chartOptions"></highcharts>
+        </q-card-section>
+
         <q-card-actions align="right">
           <q-btn outline icon="fas fa-arrow-left" label="Back" @click="step = 1"></q-btn>
-          <q-btn outline color="primary" icon="fas fa-save" label="Save"></q-btn>
+          <q-btn outline color="primary" icon="fas fa-save" label="Save to DB"></q-btn>
+          <q-btn outline color="secondary" icon="fas fa-file-pdf" label="Save as PDF"></q-btn>
         </q-card-actions>
       </q-card-section>
     </q-card>
@@ -89,8 +94,9 @@
 </template>
 
 <script lang="ts">
-  import { Variables, TableData } from 'components/models';
+  import { Variables, TableData, ChartOptionSeries } from 'components/models';
   import Vue from 'vue';
+  import { Chart } from 'highcharts-vue';
 
   // Create our number formatter.
   const formatter = new Intl.NumberFormat('en-US', {
@@ -100,6 +106,9 @@
 
   export default Vue.extend({
     name: 'Calculator',
+    components: {
+      highcharts: Chart
+    },
     data() {
       const variables: Variables = {
         age: 25,
@@ -110,6 +119,7 @@
         annualReturnPercent: 2
       };
       const tableData: TableData[] = [];
+      const series: ChartOptionSeries[] = [];
       return {
         variables,
         ageMin: 25,
@@ -130,7 +140,19 @@
           { name: 'accYield', label: 'Accumulated Yield($)', field: 'accYield', sortable: false, align: 'left' },
           { name: 'yearlyYield', label: 'Yearly Yield($)', field: 'yearlyYield', sortable: false, align: 'left' },
           { name: 'amountSaved', label: 'Saved($)', field: 'amountSaved', sortable: false, align: 'left' }
-        ]
+        ],
+        chartOptions: {
+          chart: {
+            type: 'bar'
+          },
+          title: {
+            text: 'Difference'
+          },
+          xAxis: {
+            categories: ['Yearly', 'Monthly']
+          },
+          series
+        }
       };
     },
     computed: {
@@ -160,6 +182,18 @@
             amountSaved: amountSaved
           });
         }
+
+        //populate Chart data
+        this.chartOptions.series = [
+          {
+            name: 'What you may have',
+            data: [this.tableData[this.tableData.length - 1].amountSaved / 25, this.tableData[this.tableData.length - 1].amountSaved / 25 / 12]
+          },
+          {
+            name: 'Desired pension',
+            data: [this.desiredPension, this.desiredPension / 12]
+          }
+        ];
 
         this.step = 2;
       }

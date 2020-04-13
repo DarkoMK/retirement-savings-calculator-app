@@ -14,3 +14,8 @@ export interface TableData {
   yearlyYield: number;
   amountSaved: number
 }
+
+export interface ChartOptionSeries {
+  name: string;
+  data: Array<number>;
+}
