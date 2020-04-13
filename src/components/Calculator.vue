@@ -27,6 +27,7 @@
       <q-separator/>
 
       <q-card-actions align="right">
+        <q-btn outline icon="fas fa-save" label="List Saved Results" to="/results"></q-btn>
         <q-btn outline color="primary" icon="fas fa-calculator" label="Calculate" @click="calculate"></q-btn>
       </q-card-actions>
     </q-card>
@@ -171,19 +172,21 @@
       }
     },
     mounted(): void {
-      this.$q.dialog({
-        title: 'Prompt',
-        message: 'What is your name? (Minimum 3 characters)',
-        prompt: {
-          model: '',
-          isValid: (val: string) => val.length > 2,
-          type: 'text'
-        },
-        cancel: false,
-        persistent: true
-      }).onOk((data: string) => {
-        this.variables.name = data;
-      });
+      if (this.variables.name === '') {
+        this.$q.dialog({
+          title: 'Prompt',
+          message: 'What is your name? (Minimum 3 characters)',
+          prompt: {
+            model: '',
+            isValid: (val: string) => val.length > 2,
+            type: 'text'
+          },
+          cancel: false,
+          persistent: true
+        }).onOk((data: string) => {
+          this.variables.name = data;
+        });
+      }
     },
     methods: {
       formatter(number: number): string {
