@@ -42,7 +42,27 @@
             row-key="year"
             separator="cell"
             dense
-          />
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="year" :props="props">
+                  {{ props.row.year }}
+                </q-td>
+                <q-td key="invested" :props="props">
+                  {{ formatter(props.row.invested) }}
+                </q-td>
+                <q-td key="accYield" :props="props">
+                  {{ formatter(props.row.accYield) }}
+                </q-td>
+                <q-td key="yearlyYield" :props="props">
+                  {{ formatter(props.row.yearlyYield) }}
+                </q-td>
+                <q-td key="amountSaved" :props="props">
+                  {{ formatter(props.row.amountSaved) }}
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
         </q-card-section>
         <q-separator/>
 
@@ -93,9 +113,10 @@
         tableData,
         tableColumns: [
           { name: 'year', label: 'Year', field: 'year', sortable: false, align: 'left' },
-          { name: 'accYield', label: 'Accumulated Yield', field: 'accYield', sortable: false, align: 'left' },
-          { name: 'yearlyYield', label: 'Yearly Yield', field: 'yearlyYield', sortable: false, align: 'left' },
-          { name: 'amountSaved', label: 'Saved', field: 'amountSaved', sortable: false, align: 'left' }
+          { name: 'invested', label: 'Invested($)', field: 'invested', sortable: false, align: 'left' },
+          { name: 'accYield', label: 'Accumulated Yield($)', field: 'accYield', sortable: false, align: 'left' },
+          { name: 'yearlyYield', label: 'Yearly Yield($)', field: 'yearlyYield', sortable: false, align: 'left' },
+          { name: 'amountSaved', label: 'Saved($)', field: 'amountSaved', sortable: false, align: 'left' }
         ]
       };
     },
@@ -104,6 +125,24 @@
         return formatter.format(number);
       },
       calculate(): void {
+        this.tableData = [];
+        const yearsUntilRetirement = 65 - this.variables.age;
+        const firstYearInvestment = (this.variables.annualIncome / 100) * this.variables.annualSavingsPercent;
+
+        for (let y = 1; y <= yearsUntilRetirement; y++) {
+          const currentYearInvestment = (y === 1) ? firstYearInvestment : this.tableData[this.tableData.length - 1].amountSaved + firstYearInvestment;
+          const accYield = (y === 1) ? 0 : this.tableData[this.tableData.length - 1].yearlyYield + this.tableData[this.tableData.length - 1].accYield;
+          const currentYearYield = (currentYearInvestment / 100) * this.variables.annualReturnPercent;
+          const amountSaved = currentYearInvestment + currentYearYield;
+          this.tableData.push({
+            year: y,
+            invested: currentYearInvestment,
+            accYield: accYield,
+            yearlyYield: currentYearYield,
+            amountSaved: amountSaved
+          });
+        }
+
         this.step = 2;
       }
     }

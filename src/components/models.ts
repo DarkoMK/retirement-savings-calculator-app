@@ -9,6 +9,7 @@ export interface Variables {
 
 export interface TableData {
   year: number;
+  invested: number;
   accYield: number;
   yearlyYield: number;
   amountSaved: number
