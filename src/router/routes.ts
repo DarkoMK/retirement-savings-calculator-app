@@ -4,7 +4,7 @@ const routes: RouteConfig[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Index.vue') }]
+    children: [{ path: '', props: true, component: () => import('pages/Calculator.vue') }]
   },
   {
     path: '/results',
