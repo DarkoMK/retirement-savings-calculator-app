@@ -1,6 +1,6 @@
 <template>
   <div class="col col-xs-12 col-sm-6">
-    <q-card class="q-pa-md" v-show="step === 1">
+    <q-card class="q-pa-md" v-if="step === 1">
       <q-card-section>
         <div class="text-h6">Retirement Calculator</div>
       </q-card-section>
@@ -30,7 +30,7 @@
         <q-btn outline color="primary" icon="fas fa-calculator" label="Calculate" @click="calculate"></q-btn>
       </q-card-actions>
     </q-card>
-    <q-card class="q-pa-md" v-show="step === 2">
+    <q-card class="q-pa-md" v-if="step === 2">
       <q-card-section>
         <div class="text-h6">Retirement Calculator</div>
 
@@ -64,6 +64,19 @@
             </template>
           </q-table>
         </q-card-section>
+
+        <q-card-section>
+          <span>
+            Currently you are making <b>{{ formatter(variables.annualIncome) }}</b> per year and your desired pension is <b>{{ formatter(desiredPension) }}</b> per year.
+            Based on the parameters you provided, you can save total of <b>{{ formatter(tableData[tableData.length - 1].amountSaved) }}</b> or that will be <b>{{ formatter(tableData[tableData.length - 1].amountSaved / 25) }}</b> per year taken that the retirement duration is 25 years.
+          </span>
+          <p>The yearly difference between the desired pension and the saved is <b style="color: red">{{
+            formatter(desiredPension - tableData[tableData.length - 1].amountSaved / 25) }}</b>.
+            <br>
+            The monthly difference between the desired pension and the saved is <b style="color: red">{{
+              formatter(desiredPension / 12 - tableData[tableData.length - 1].amountSaved / 25 / 12) }}</b>.</p>
+        </q-card-section>
+
         <q-separator/>
 
         <q-card-actions align="right">
@@ -119,6 +132,11 @@
           { name: 'amountSaved', label: 'Saved($)', field: 'amountSaved', sortable: false, align: 'left' }
         ]
       };
+    },
+    computed: {
+      desiredPension(): number {
+        return (this.variables.annualIncome / 100) * this.variables.neededIncomePercent;
+      }
     },
     methods: {
       formatter(number: number): string {
