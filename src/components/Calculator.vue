@@ -119,6 +119,7 @@
     },
     data() {
       const variables: Variables = {
+        id: 0,
         name: '',
         age: 25,
         retirementAge: 65,

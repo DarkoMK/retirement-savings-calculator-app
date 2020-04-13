@@ -46,6 +46,10 @@
               <q-td key="annualReturnPercent" :props="props">
                 {{ props.row.annualReturnPercent }}%
               </q-td>
+              <q-td key="actions" :props="props">
+                <q-btn icon="fas fa-eye" dense flat @click="viewItem(props.row)"></q-btn>
+                <q-btn icon="fas fa-trash" color="red" dense flat @click="deleteItem(props.row)"></q-btn>
+              </q-td>
             </q-tr>
           </template>
         </q-table>
@@ -58,17 +62,14 @@
       </q-card>
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
   import { Variables } from 'components/models';
-  import Calculator from 'components/Calculator.vue';
   import Vue from 'vue';
 
   export default Vue.extend({
     name: 'Results',
-    components: { Calculator },
     data() {
       const tableData: Variables[] = [];
       return {
@@ -101,6 +102,13 @@
             field: 'annualReturnPercent',
             sortable: false,
             align: 'left'
+          },
+          {
+            name: 'actions',
+            label: 'Actions',
+            field: 'actions',
+            sortable: false,
+            align: 'left'
           }
         ]
       };
@@ -127,6 +135,31 @@
             console.log(error);
             this.$q.notify({ message: 'Error happened.', type: 'warning', position: 'bottom-left' });
           });
+      },
+      viewItem(item: object) {
+      },
+      deleteItem(item: Variables) {
+        this.$q.dialog({
+          title: 'Confirm',
+          message: 'Would you like to delete this item?',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          console.log(item);
+          this.$axios.post('http://localhost:8000/api/calculator/delete', item)
+            .then(res => {
+              // console.log(res);
+              const index = this.tableData.indexOf(item);
+              if (index > -1) {
+                this.tableData.splice(index, 1);
+              }
+              this.$q.notify({ message: res.data.message, type: 'info', position: 'bottom-left' });
+            })
+            .catch(error => {
+              console.log(error);
+              this.$q.notify({ message: 'Error happened.', type: 'warning', position: 'bottom-left' });
+            });
+        });
       }
     }
   });

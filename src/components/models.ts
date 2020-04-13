@@ -1,4 +1,5 @@
 export interface Variables {
+  id: number,
   name: string;
   age: number;
   retirementAge: number;
