@@ -1,8 +1,8 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
-/*	
- * This file runs in a Node context (it's NOT transpiled by Babel), so use only	
- * the ES6 features that are supported by your Node version. https://node.green/	
+/*
+ * This file runs in a Node context (it's NOT transpiled by Babel), so use only
+ * the ES6 features that are supported by your Node version. https://node.green/
  */
 
 // Configuration for your app
@@ -29,7 +29,7 @@ module.exports = configure(function (/* ctx */) {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v4',
-      // 'fontawesome-v5',
+      'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -62,7 +62,7 @@ module.exports = configure(function (/* ctx */) {
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
     supportIE: true,
-    
+
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ts
     supportTS: {
       tsCheckerConfig: { eslint: true }
