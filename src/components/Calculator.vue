@@ -86,7 +86,7 @@
         <q-card-actions align="right">
           <q-btn outline icon="fas fa-arrow-left" label="Back" @click="step = 1"></q-btn>
           <q-btn outline color="primary" icon="fas fa-save" label="Save to DB"></q-btn>
-          <q-btn outline color="secondary" icon="fas fa-file-pdf" label="Save as PDF"></q-btn>
+          <q-btn outline color="secondary" icon="fas fa-file-pdf" label="Save as PDF" @click="savePDF"></q-btn>
         </q-card-actions>
       </q-card-section>
     </q-card>
@@ -97,6 +97,13 @@
   import { Variables, TableData, ChartOptionSeries } from 'components/models';
   import Vue from 'vue';
   import { Chart } from 'highcharts-vue';
+  import jsPDF from 'jspdf';
+  import 'jspdf-autotable';
+  import { UserOptions } from 'jspdf-autotable';
+
+  interface JsPDFwithPlugin extends jsPDF {
+    autoTable: (options: UserOptions) => jsPDF;
+  }
 
   // Create our number formatter.
   const formatter = new Intl.NumberFormat('en-US', {
@@ -120,6 +127,7 @@
       };
       const tableData: TableData[] = [];
       const series: ChartOptionSeries[] = [];
+      const formattedData: Array<Array<string>> = [];
       return {
         variables,
         ageMin: 25,
@@ -134,6 +142,7 @@
         annualReturnPercentMax: 20,
         step: 1,
         tableData,
+        formattedData,
         tableColumns: [
           { name: 'year', label: 'Year', field: 'year', sortable: false, align: 'left' },
           { name: 'invested', label: 'Invested($)', field: 'invested', sortable: false, align: 'left' },
@@ -181,8 +190,9 @@
             yearlyYield: currentYearYield,
             amountSaved: amountSaved
           });
-        }
 
+          this.formattedData.push([y.toString(), this.formatter(currentYearInvestment), this.formatter(accYield), this.formatter(currentYearYield), this.formatter(amountSaved)]);
+        }
         //populate Chart data
         this.chartOptions.series = [
           {
@@ -196,6 +206,15 @@
         ];
 
         this.step = 2;
+      },
+      savePDF(): void {
+        const doc = new jsPDF('portrait', 'px', 'a4') as JsPDFwithPlugin;
+        doc.autoTable({
+          head: [['Year', 'Invested($)', 'Accumulated Yield($)', 'Yearly Yield($)', 'Saved($)']],
+          body: this.formattedData
+        });
+
+        doc.save('Calculation.pdf');
       }
     }
   });
