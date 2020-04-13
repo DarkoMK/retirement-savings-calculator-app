@@ -138,7 +138,8 @@
             this.$q.notify({ message: 'Error happened.', type: 'warning', position: 'bottom-left' });
           });
       },
-      viewItem(item: object) {
+      viewItem(item: Variables) {
+        this.$router.push({ name: 'calculator', params: { loadID: item.id.toString() } });
       },
       deleteItem(item: Variables) {
         this.$q.dialog({

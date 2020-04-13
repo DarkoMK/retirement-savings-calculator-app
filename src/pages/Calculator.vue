@@ -180,7 +180,20 @@
       }
     },
     mounted(): void {
-      if (this.variables.name === '') {
+      if (Object.keys(this.$route.params).length && 'loadID' in this.$route.params) {
+        this.$q.loading.show();
+        this.$axios.get('http://localhost:8000/api/calculator/' + this.$route.params.loadID)
+          .then(res => {
+            this.variables = res.data.data[0];
+            this.$q.loading.hide();
+            this.calculate();
+          })
+          .catch(error => {
+            console.log(error);
+            this.$q.notify({ message: 'Error happened.', type: 'warning', position: 'bottom-left' });
+            this.$q.loading.hide();
+          });
+      } else if (this.variables.name === '') {
         this.$q.dialog({
           title: 'Prompt',
           message: 'What is your name? (Minimum 3 characters)',
@@ -248,6 +261,7 @@
           .then(res => {
             // console.log(res);
             this.$q.notify({ message: res.data.message, type: 'info', position: 'bottom-left' });
+            this.$router.push('/results');
           })
           .catch(error => {
             console.log(error);
