@@ -1,4 +1,5 @@
 export interface Variables {
+  name: string;
   age: number;
   retirementAge: number;
   annualIncome: number;

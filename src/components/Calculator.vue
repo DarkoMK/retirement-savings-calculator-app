@@ -85,7 +85,7 @@
 
         <q-card-actions align="right">
           <q-btn outline icon="fas fa-arrow-left" label="Back" @click="step = 1"></q-btn>
-          <q-btn outline color="primary" icon="fas fa-save" label="Save to DB"></q-btn>
+          <q-btn outline color="primary" icon="fas fa-save" label="Save to DB" @click="saveDB"></q-btn>
           <q-btn outline color="secondary" icon="fas fa-file-pdf" label="Save as PDF" @click="savePDF"></q-btn>
         </q-card-actions>
       </q-card-section>
@@ -118,6 +118,7 @@
     },
     data() {
       const variables: Variables = {
+        name: '',
         age: 25,
         retirementAge: 65,
         annualIncome: 10000,
@@ -215,6 +216,17 @@
         });
 
         doc.save('Calculation.pdf');
+      },
+      saveDB() {
+        this.$axios.post('http://localhost:8000/api/calculator', this.variables)
+          .then(res => {
+            // console.log(res);
+            this.$q.notify({ message: res.data.message, type: 'info', position: 'bottom-left' });
+          })
+          .catch(error => {
+            console.log(error);
+            this.$q.notify({ message: 'Error happened.', type: 'warning', position: 'bottom-left' });
+          });
       }
     }
   });
