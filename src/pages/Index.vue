@@ -1,6 +1,8 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <calculator></calculator>
+  <q-page>
+    <div class="row q-pa-md justify-center">
+      <calculator></calculator>
+    </div>
   </q-page>
 </template>
 

@@ -53,11 +53,7 @@ module.exports = configure(function (/* ctx */) {
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: 'auto',
 
-      components: [
-        'QCard',
-        'QCardSection',
-        'QCardActions'
-      ],
+      components: [],
       directives: [],
 
       // Quasar plugins
