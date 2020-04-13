@@ -170,6 +170,21 @@
         return (this.variables.annualIncome / 100) * this.variables.neededIncomePercent;
       }
     },
+    mounted(): void {
+      this.$q.dialog({
+        title: 'Prompt',
+        message: 'What is your name? (Minimum 3 characters)',
+        prompt: {
+          model: '',
+          isValid: (val: string) => val.length > 2,
+          type: 'text'
+        },
+        cancel: false,
+        persistent: true
+      }).onOk((data: string) => {
+        this.variables.name = data;
+      });
+    },
     methods: {
       formatter(number: number): string {
         return formatter.format(number);
